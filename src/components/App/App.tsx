@@ -1,7 +1,6 @@
 import { useState, type ChangeEvent } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import useFetchNotes from "../../hooks/useFetchNotes";
-import useDeleteNote from "../../hooks/useDeleteNote";
 import SearchBox from "../SearchBox/SearchBox";
 import Pagination from "../Pagination/Pagination";
 import NoteList from "../NoteList/NoteList";
@@ -35,16 +34,11 @@ export default function App() {
   }
 
   const { data, isLoading, isError } = useFetchNotes(searchQuery, currentPage);
-  const deleteNoteMutation = useDeleteNote();
 
   const notes = data?.notes ?? [];
   const totalPages = data?.totalPages ?? 0;
 
-  function handleDelete(noteId: string) {
-    deleteNoteMutation.mutate(noteId);
-  }
-
-return (
+  return (
     <div className={css.app}>
       <header className={css.toolbar}>
         <SearchBox value={inputValue} onChange={handleSearchChange} />
@@ -65,7 +59,7 @@ return (
       {isLoading && <p>Loading...</p>}
       {isError && <p>Something went wrong.</p>}
 
-      {notes.length > 0 && <NoteList notes={notes} onDelete={handleDelete} />}
+      {notes.length > 0 && <NoteList notes={notes} />}
 
       {isModalOpen && (
         <Modal onClose={closeModal}>
